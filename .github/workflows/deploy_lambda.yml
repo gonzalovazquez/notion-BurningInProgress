@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write  # Required for OIDC authentication with AWS
+  contents: read   # Allows GitHub Actions to read repository contents
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -47,6 +51,10 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
+
+      # Optionally, add a command to verify AWS access
+      - name: Verify AWS Authentication
+        run: aws sts get-caller-identity
 
       - name: Prepare deployment package
         run: |
