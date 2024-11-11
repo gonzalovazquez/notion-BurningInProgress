@@ -24,6 +24,28 @@ jobs:
           unzip awscliv2.zip
           sudo ./aws/install --update
 
+      - name: Check Secrets Availability
+        run: |
+          if [ -z "${{ secrets.AWS_ROLE_ARN }}" ]; then
+            echo "AWS_ROLE_ARN is not set"
+          else
+            echo "AWS_ROLE_ARN is available"
+          fi
+          if [ -z "${{ secrets.AWS_REGION }}" ]; then
+            echo "AWS_REGION is not set"
+          else
+            echo "AWS_REGION is available"
+          fi
+          if [ -z "${{ secrets.LAMBDA_FUNCTION_NAME }}" ]; then
+            echo "LAMBDA_FUNCTION_NAME is not set"
+          else
+            echo "LAMBDA_FUNCTION_NAME is available"
+          fi
+
+      - name: Verify AWS Authentication
+        run: aws s3 ls
+        continue-on-error: true
+
       - name: Configure AWS Credentials
         id: aws-creds
         uses: aws-actions/configure-aws-credentials@v2
