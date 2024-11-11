@@ -42,13 +42,8 @@ jobs:
             echo "LAMBDA_FUNCTION_NAME is available"
           fi
 
-      - name: Verify AWS Authentication
-        run: aws s3 ls
-        continue-on-error: true
-
-      - name: Configure AWS Credentials
-        id: aws-creds
-        uses: aws-actions/configure-aws-credentials@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ secrets.AWS_REGION }}
