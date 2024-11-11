@@ -22,6 +22,21 @@ jobs:
         with:
           python-version: '3.9'
 
+
+      - name: Install dependencies
+        run: |
+          python3 -m venv myenv
+          source myenv/bin/activate
+          pip install requests notion-client
+
+      - name: Prepare deployment package with dependencies
+        run: |
+          mkdir deployment_package
+          cp lambda_function.py deployment_package/
+          cp -r myenv/lib/python3.9/site-packages/* deployment_package/  # Adjust the Python version if necessary
+          cd deployment_package
+          zip -r ../function.zip .
+
       - name: Install AWS CLI
         run: |
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -55,10 +70,6 @@ jobs:
       # Optionally, add a command to verify AWS access
       - name: Verify AWS Authentication
         run: aws sts get-caller-identity
-
-      - name: Prepare deployment package
-        run: |
-          zip function.zip lambda_function.py
 
       - name: Deploy to AWS Lambda
         run: |
