@@ -37,7 +37,7 @@ def add_to_notion(movie_data):
     notion.pages.create(
         parent={"database_id": NOTION_DATABASE_ID},
         properties={
-            "Title": {"title": [{"text": {"content": movie_data["Title"]}}]},
+            "Name": {"title": [{"text": {"content": movie_data["Title"]}}]},
             "Director": {"rich_text": [{"text": {"content": movie_data["Director"]}}]},
             "Running Time": {"rich_text": [{"text": {"content": movie_data["Running Time"]}}]},
             "Genre": {"rich_text": [{"text": {"content": movie_data["Genre"]}}]},
