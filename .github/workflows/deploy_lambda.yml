@@ -62,17 +62,17 @@ jobs:
 
       - name: Deploy to AWS Lambda
         run: |
-          # Retry logic in case of resource conflict
-          for i in {1..5}; do
-            aws lambda update-function-code \
-              --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
-              --zip-file fileb://function.zip && break
-            echo "Waiting for Lambda to finish the previous update..."
-            sleep 30  # Wait for 30 seconds before retrying
-          done
+          aws lambda update-function-code \
+            --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
+            --zip-file fileb://function.zip
 
       - name: Update Lambda Environment Variables
         run: |
-          aws lambda update-function-configuration \
-            --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
-            --environment "Variables={OMDB_API_KEY=${{ secrets.OMDB_API_KEY }},NOTION_API_KEY=${{ secrets.NOTION_API_KEY }},NOTION_DATABASE_ID=${{ secrets.NOTION_DATABASE_ID }}}"
+          # Retry logic for environment variable update
+          for i in {1..5}; do
+            aws lambda update-function-configuration \
+              --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
+              --environment "Variables={OMDB_API_KEY=${{ secrets.OMDB_API_KEY }},NOTION_API_KEY=${{ secrets.NOTION_API_KEY }},NOTION_DATABASE_ID=${{ secrets.NOTION_DATABASE_ID }}}" && break
+            echo "Waiting for Lambda to finish the previous update..."
+            sleep 30  # Wait for 30 seconds before retrying
+          done
