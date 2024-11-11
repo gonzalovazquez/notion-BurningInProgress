@@ -49,11 +49,21 @@ def add_to_notion(movie_data):
 
 def lambda_handler(event, context):
     # Log the event for debugging
+   # Log the event for debugging
     print("Received event: ", json.dumps(event))  # This helps you understand the structure of the event
-    # Parse movie title from the event body
-    body = json.dumps(event)
-    movie_title = body["title"]
 
+    # Safely get the body from the event and parse it
+    body = event.get('body')
+    if body:
+        body = json.loads(body)  # Parse the body string into a JSON object
+    else:
+        return {
+            "statusCode": 400,
+            "body": json.dumps({"error": "Event body is missing or malformed"})
+        }
+
+    # Safely extract the movie title
+    movie_title = body.get("title")
     if not movie_title:
         return {
             "statusCode": 400,
